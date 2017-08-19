@@ -21,8 +21,6 @@
 
 local M = {}
 
-local util = require "main.framework.utilities"
-
 local noType = 1
 
 --##########  Entity Groups  ##########
@@ -55,7 +53,11 @@ end
 -- Example: M.unsubscribe(msg.url("#"), M.enemies)
 function M.unsubscribe(url, ...)
 	for i, v in ipairs({...}) do
-		util.find_remove(sub[v], url)
+		for i, v in ipairs(sub[v]) do -- find and remove
+			if v == url then
+				table.remove(sub, i)
+			end
+		end
 	end
 end
 
@@ -99,7 +101,6 @@ end
 -- Example: if M.getCount(M.players) > 0 then self.target = M.getAnEnt(M.players) end
 function M.getAnEnt(group)
 	for k,v in pairs(ent[group]) do
-		print("EntMan - getAnyEnt Iteration ", k)
 		if k ~= "l" then
 			return k
 		end
