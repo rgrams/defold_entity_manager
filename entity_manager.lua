@@ -52,10 +52,10 @@ end
 -- Likewise, to unsubscribe. Be sure to call this before being destroyed (you can call it in the script's final())
 -- Example: M.unsubscribe(msg.url("#"), M.enemies)
 function M.unsubscribe(url, ...)
-	for i, v in ipairs({...}) do
-		for i, v in ipairs(sub[v]) do -- find and remove
+	for i, group in ipairs({...}) do
+		for i, v in ipairs(sub[group]) do -- find and remove
 			if v == url then
-				table.remove(sub, i)
+				table.remove(sub[group], i)
 			end
 		end
 	end
