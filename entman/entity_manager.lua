@@ -1,3 +1,4 @@
+-- VERSION 2.0
 --
 --		A subscription module for keeping track of existing entities---enemies, players, pickups, etc.
 ------------------------------------------------------------------------------------------------------
@@ -34,16 +35,19 @@ M.enemies = hash("enemies")
 -- Don't mess with these directly. Use the module functions to subscribe, unsubscribe, spawn, and destroy.
 local ent = {}
 local sub = {}
+local entCounts = {}
 
 for i,v in ipairs(groupList) do
-	ent[M[v]] = { l=0 } -- "L", for "Length". Used to keep track of total entity counts for each group.
+	ent[M[v]] = {}
 	sub[M[v]] = {}
+	entCounts[M[v]] = 0
 end
 
 
--- Called with the url of the subscribing object/component, and any number groups to subscribe to.
+-- Called with the url of the subscribing object/component, and any number of groups to subscribe to.
 -- Example: M.subscribe(msg.url("#"), M.enemies, M.pickups)
 function M.subscribe(url, ...)
+	assert(type(url) == "userdata" and url.path, "entity_manager.subscribe(url, group) - \"url\" is NOT a url.")
 	for i, v in ipairs({...}) do
 		table.insert(sub[v], url)
 	end
@@ -52,6 +56,7 @@ end
 -- Likewise, to unsubscribe. Be sure to call this before being destroyed (you can call it in the script's final())
 -- Example: M.unsubscribe(msg.url("#"), M.enemies)
 function M.unsubscribe(url, ...)
+	assert(type(url) == "userdata" and url.path, "entity_manager.unsubscribe(url, group) - \"url\" is NOT a url.")
 	for i, group in ipairs({...}) do
 		for i, v in ipairs(sub[group]) do -- find and remove
 			if v == url then
@@ -67,7 +72,7 @@ end
 function M.spawn(path, group, type)
 	type = type or noType
 	ent[group][path] = type
-	ent[group].l = ent[group].l + 1
+	entCounts[group] = entCounts[group] + 1
 	for i, v in ipairs(sub[group]) do
 		msg.post(v, "entity spawned", {group = group, entity = path, type = type})
 	end
@@ -78,21 +83,25 @@ end
 -- The "entity destroyed" message includes the "last" property so you can tell when the last enemy is killed, etc.
 function M.destroy(path, group)
 	local type = ent[group][path]
-	ent[group][path] = nil
-	ent[group].l = ent[group].l - 1
-	for i, v in ipairs(sub[group]) do
-		msg.post(v, "entity destroyed", {group = group, entity = path, type = type, last = ent[group].l == 0})
+	if type then
+		ent[group][path] = nil
+		entCounts[group] = entCounts[group] - 1
+		for i, v in ipairs(sub[group]) do
+			msg.post(v, "entity destroyed", {group = group, entity = path, type = type, last = entCounts[group] == 0})
+		end
+	else
+		print("WARNING - entity_manager.destroy() - entity path not found.")
 	end
 end
 
 -- Get the total number of entities in a group.
 -- Example: M.getCount(M.enemies)
 function M.getCount(group)
-	return ent[group].l
+	return entCounts[group]
 end
 
 -- In case for some reason you need to get the whole list of entities in a group.
--- Returns a table something like this: {path1 = type1, path2 = type2, l = 2}
+-- Returns a table something like this: {path1 = type1, path2 = type2}
 function M.getGroup(group)
 	return ent[group]
 end
@@ -101,8 +110,23 @@ end
 -- Example: if M.getCount(M.players) > 0 then self.target = M.getAnEnt(M.players) end
 function M.getAnEnt(group)
 	for k,v in pairs(ent[group]) do
-		if k ~= "l" then
-			return k
+		return k
+	end
+end
+
+-- Like the above, only truly random.
+-- Returns nil if there are no entities in the specified group.
+function M.getRandomEnt(group)
+	if entCounts[group] == 0 then
+		return
+	end
+	local idx = math.random(1, entCounts[group])
+	local count = 1
+	for path, type in pairs(ent[group]) do
+		if count == idx then
+			return path, type
+		else
+			count = count + 1
 		end
 	end
 end
