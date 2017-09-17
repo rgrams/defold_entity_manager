@@ -31,8 +31,6 @@ local entman = require "entity_manager.entity_manager"
 Then you will call module functions and access module properties with "entman" instead of "M".
 
 ```Lua
-local entman = require "entity_manager.entity_manager"
-
 function init(self)
     entman.subscribe(msg.url("#"), entman.players)
 end
