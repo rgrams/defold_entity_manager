@@ -1,8 +1,0 @@
-[project]
-title = Defold Entity Manager
-version = 1.0
-
-[library]
-include_dirs = entman
-
-

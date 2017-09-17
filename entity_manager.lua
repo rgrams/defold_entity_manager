@@ -13,7 +13,7 @@
 -- 6. IMPORTANT: Entities are keyed by their url PATH, NOT the full url.
 --		The path is a hashed string which is a property of the full url (which is a userdata value and can't be used as a key).
 --		This removes the need to search the list for the right object, and makes it easier to store a "type" for each entity.
---		This means means that only the path to the game object is stored, not the socket or the component.
+--		This means means that only the path to the game object is stored, not to the specific component.
 --				(This, in turn, means you shouldn't have multiple scripts on an object that each register as an entity)
 
 -- 7. Subscriptions, on the other hand, are handled with full urls.
