@@ -4,17 +4,17 @@ _version 2.0 -- (September 17th, 2017)_
 
 This is a small Lua module for keeping track of existing entities of various types. Defold has no built-in way to check if an object exists, so this is my way of knowing if the enemy the player is targeting still exists, if any players are alive, if the enemy I just killed was the last one, when the player is killed, etc.
 
-The module is fully commented with instructions and examples of use for each function, or see the slightly more thorough instructions below.
+The module is fully commented with instructions and examples of use for each function, or you can read the slightly more thorough instructions below.
 
 _Special thanks to solariyoung for testing and the getRandomEnt function!_
 
 # Instructions
 
-### Using a Lua Module
+## Using a Lua Module
 
 I suggest you read the [Lua module manual](https://www.defold.com/manuals/modules/) before using this or any other Lua module.
 
-#### Module Names
+### Module Names
 
 To use a module in a script you must first `require` it with a line of code like this:
 
@@ -58,7 +58,7 @@ This module creates a subscription system. Scripts in which you want to keep tra
 
 * Subscriptions, on the other hand, are handled with full urls. This is so there can be multiple scripts on one object subscribing to different groups.
 
-#### Functions
+### Functions
 
 **M.subscribe(url, ...)**
 
@@ -98,7 +98,7 @@ M.getCount(M.enemies)
 
 **M.getGroup(group)**
 
-In case for some reason you need to get the whole list of entities in a group.
+Gets the complete list of entities in a group.
 Returns a table something like this: {path1 = type1, path2 = type2}
 ```Lua
 M.getGroup(M.players)
@@ -119,32 +119,32 @@ Returns `nil` if there are no entities in the specified group. Example:
 M.getRandomEnt(M.enemies)
 ```
 
-#### Messages
+### Messages
 
 **"entity spawned", { group=..., entity=..., type=... }**
 
 Sent to all group subscribers when an entity in that group is spawned.
-* group <kbd>hash</kbd> -- The group that the entity was in. (_ex. `M.enemies`_) If you subscribe to multiple groups you probably want to check this.
+* group <kbd>hash</kbd> -- The group that the entity was in. (_ex. `M.enemies`_) If you subscribe to multiple groups you may want to check this.
 * entity <kbd>hash</kbd> -- The path to the entity game object. (_the one that it called M.spawn with_)
 * type <kbd>any</kbd> -- The type of the entity. (_optional. 0 by default_)
 
 **"entity destroyed", { group=..., entity=..., type=..., last=... }**
 
 Sent to all group subscribers when an entity in that group is destroyed.
-* group <kbd>hash</kbd> -- The group that the entity was in. (_ex. `M.enemies`_) If you subscribe to multiple groups you probably want to check this.
+* group <kbd>hash</kbd> -- The group that the entity was in. (_ex. `M.enemies`_) If you subscribe to multiple groups you may want to check this.
 * entity <kbd>hash</kbd> -- The path to the entity game object. (_the one that it called M.destroy with_)
 * type <kbd>any</kbd> -- The type of the entity. (_optional. 0 by default_)
 * last <kbd>bool</kbd> -- `true` if this entity was the last one in its group, otherwise `false`.
 
-### Download
+## Download
 
 Since this module must be modified to add new groups, it is _not_ set up to be used as a [library dependency](https://www.defold.com/manuals/libraries/). Library dependencies are reloaded every time you start the editor, which would erase your changes. To download the module, right-click the following link and choose "Save Link As..."
 
 https://github.com/rgrams/defold_entity_manager/raw/master/entity_manager.lua
 
-Or create a new lua module on your drive and copy-paste the code into it.
+Or create a new lua module on your drive and copy-paste [the code](https://github.com/rgrams/defold_entity_manager/blob/master/entity_manager.lua) into it.
 
-### Other Tips
+## Other Tips
 
 `msg.url()` is not the cheapest function in the world, so I usually only call it once in each script and store the result in a `self` property. For example:
 
@@ -163,6 +163,6 @@ function final(self)
 end
 ```
 
-### Feedback
+## Feedback
 
 If you have any feedback, complaints, feature requests, praise, or anything else to say about this module, please post in [the forum thread](https://forum.defold.com/t/entity-manager-module/10818), send me a message on the forum, or open a [Github issue](https://github.com/rgrams/defold_entity_manager/issues). Thanks!
