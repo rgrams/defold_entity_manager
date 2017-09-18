@@ -151,13 +151,13 @@ local entman = require "entman.entity_manager"
 
 function init(self)
     self.url = msg.url("#")
-	entman.subscribe(self.url, entman.enemies, entman.pickups)
-	entman.spawn(self.url.path, entman.players)
+    entman.subscribe(self.url, entman.enemies, entman.pickups)
+    entman.spawn(self.url.path, entman.players)
 end
 
 function final(self)
     entman.unsubscribe(self.url, entman.enemies, entman.pickups)
-	entman.destroy(self.url.path, entman.players)
+    entman.destroy(self.url.path, entman.players)
 end
 ```
 
