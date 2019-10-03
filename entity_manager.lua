@@ -1,5 +1,5 @@
 
--- LÖVE VERSION (3.0)
+-- version 3.0 for LÖVE2D
 --
 --		A subscription module for keeping track of existing entities---enemies, players, pickups, etc.
 --
