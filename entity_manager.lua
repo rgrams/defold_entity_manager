@@ -47,7 +47,7 @@ end
 -- Called with the url of the subscribing object/component, and any number of groups to subscribe to.
 -- Example: M.subscribe(obj, 'enemies', 'pickups')
 function M.subscribe(obj, ...)
-	assert(data(obj) == 'table', 'entity_manager.subscribe(obj, groups...) - "obj" is not a table.')
+	assert(type(obj) == 'table', 'entity_manager.subscribe(obj, groups...) - "obj" is not a table.')
 	for _, group in ipairs({...}) do
 		table.insert(sub[group], obj)
 	end
@@ -55,7 +55,7 @@ end
 
 -- Likewise, to unsubscribe. Be sure to call this before being destroyed (you can call it in the script's final())
 function M.unsubscribe(obj, ...)
-	assert(data(obj) == 'table', 'entity_manager.subscribe(obj, groups...) - "obj" is not a table.')
+	assert(type(obj) == 'table', 'entity_manager.subscribe(obj, groups...) - "obj" is not a table.')
 	for _, group in ipairs({...}) do
 		for i, listener in ipairs(sub[group]) do -- find and remove
 			if listener == obj then
